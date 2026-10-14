@@ -10,38 +10,41 @@
 [![Laravel Version](https://img.shields.io/badge/Laravel-9.x%20|%2010.x%20|%2011.x%20|%2012.x-FF2D20.svg?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![Tests Passing](https://img.shields.io/badge/tests-passing-brightgreen.svg?style=for-the-badge&logo=githubactions)](tests)
 
-[English Documentation](#-english-summary) • [گزارش باگ / پیشنهاد](https://github.com/Danaserver/farapayamak-laravel/issues) • [مستندات فراپیامک](https://docs.farapayamak.ir)
+[English Documentation](#english-summary) • [گزارش باگ / پیشنهاد](https://github.com/Danaserver/farapayamak-laravel/issues) • [مستندات فراپیامک](https://docs.farapayamak.ir)
 
 </div>
 
 ---
 
+<a id="table-of-contents"></a>
 ## 📑 فهرست مطالب
-- [چرا این پکیج؟](#-چرا-این-پکیج)
-- [ویژگی‌های کلیدی](#-ویژگیهای-کلیدی)
-- [پیش‌نیازها](#-پیشنیازها)
-- [نصب و راه‌اندازی](#-نصب-و-راهاندازی)
-- [تنظیمات (.env)](#️-تنظیمات-env)
-- [معماری دوحالته (Hybrid): خواندن و ذخیره در دیتابیس](#-معماری-دوحالته-hybrid-خواندن-و-ذخیره-در-دیتابیس)
-- [آموزش جامع استفاده](#-آموزش-جامع-استفاده)
-  - [۱. ارسال بر اساس الگو/پترن خدماتی (عبور از بلک‌لیست)](#۱-ارسال-بر-اساس-الگوپترن-خدماتی-عبور-از-بلکلیست)
-  - [۲. دریافت شماره‌های کاربر برای فرم‌ها و Select-Box](#۲-دریافت-شمارههای-کاربر-برای-فرمها-و-select-box)
-  - [۳. دریافت لیست الگوهای خدماتی](#۳-دریافت-لیست-الگوهای-خدماتی)
-  - [۴. ارسال پیامک متنی ساده، فلش و گروهی](#۴-ارسال-پیامک-متنی-ساده-فلش-و-گروهی)
-  - [۵. ارسال متناظر و نظیر به نظیر](#۵-ارسال-متناظر-و-نظیر-به-نظیر)
-  - [۶. استعلام مانده اعتبار عددی و ریالی](#۶-استعلام-مانده-اعتبار-عددی-و-ریالی)
-  - [۷. ارسال پیامک صوتی (Text-to-Speech)](#۷-ارسال-پیامک-صوتی-text-to-speech)
-  - [۸. زمان‌بندی پیامک](#۸-زمانبندی-پیامک)
-  - [۹. استعلام وضعیت تحویل (Delivery)](#۹-استعلام-وضعیت-تحویل-delivery)
-- [یکپارچگی با نوتیفیکیشن‌های لاراول (Laravel Notification)](#-یکپارچگی-با-نوتیفیکیشنهای-لاراول-laravel-notification)
-- [سیستم شبیه‌ساز تست (Fake / Mocking)](#-سیستم-شبیهساز-تست-fake--mocking)
-- [دستورات خط فرمان ترمینال (Artisan Commands)](#-دستورات-خط-فرمان-ترمینال-artisan-commands)
-- [رویدادهای لاراول (Laravel Events)](#-رویدادهای-لاراول-laravel-events)
-- [جدول کدهای خطای فراپیامک](#-جدول-کدهای-خطای-فراپیامک)
-- [لایسنس](#-لایسنس)
+- [چرا این پکیج؟](#why-this-package)
+- [ویژگی‌های کلیدی](#features)
+- [پیش‌نیازها](#requirements)
+- [نصب و راه‌اندازی](#installation)
+- [تنظیمات (.env)](#configuration)
+- [معماری دوحالته (Hybrid): خواندن و ذخیره در دیتابیس](#hybrid-database)
+- [آموزش جامع استفاده](#usage)
+  - [۱. ارسال بر اساس الگو/پترن خدماتی (عبور از بلک‌لیست)](#pattern-sending)
+  - [۲. دریافت شماره‌های کاربر برای فرم‌ها و Select-Box](#user-numbers)
+  - [۳. دریافت لیست الگوهای خدماتی](#service-patterns)
+  - [۴. ارسال پیامک متنی ساده، فلش و گروهی](#simple-sms)
+  - [۵. ارسال متناظر و نظیر به نظیر](#multiple-sms)
+  - [۶. استعلام مانده اعتبار عددی و ریالی](#credit-check)
+  - [۷. ارسال پیامک صوتی (Text-to-Speech)](#voice-sms)
+  - [۸. زمان‌بندی پیامک](#schedule-sms)
+  - [۹. استعلام وضعیت تحویل (Delivery)](#delivery-reports)
+- [یکپارچگی با نوتیفیکیشن‌های لاراول (Laravel Notification)](#laravel-notifications)
+- [سیستم شبیه‌ساز تست (Fake / Mocking)](#testing-fake)
+- [دستورات خط فرمان ترمینال (Artisan Commands)](#artisan-commands)
+- [رویدادهای لاراول (Laravel Events)](#laravel-events)
+- [جدول کدهای خطای فراپیامک](#error-codes)
+- [English Summary](#english-summary)
+- [لایسنس](#license)
 
 ---
 
+<a id="why-this-package"></a>
 ## 💡 چرا این پکیج؟
 
 اکثر پکیج‌های موجود تنها به یک متد ساده ارسال یا یک وب‌سرویس خلاصه شده‌اند. این پکیج به عنوان یک **کیت توسعه پیامکی کامل سازمانی (Enterprise Toolkit)** طراحی شده است تا:
@@ -49,14 +52,17 @@
 2. با قابلیت **Failover**، در صورت اختلال در سرور REST فراپیامک، بدون وقفه پیام را از طریق درایور SOAP مخابره کند.
 3. در محیط‌های تست، بدون هدر رفتن شارژ پنل، سناریوهای تایید هویت را با `Farapayamak::fake()` محک بزند.
 4. با قابلیت **Smart Mobile Sanitizer**، تمام فرمت‌های نامتعارف شماره موبایل (شامل کاراکترهای فارسی/عربی، پیش‌شماره‌های `+98`, `0098`, `98`) را خودکار استاندارد کند.
+5. با قابلیت **معماری دوحالته (Hybrid)**، تنظیمات را هم از دیتابیس (بدون نیاز به دستکاری فایل `.env` توسط مشتری) و هم از فایل کانفیگ لود نماید.
 
 ---
 
+<a id="features"></a>
 ## ✨ ویژگی‌های کلیدی
 
 - ⚡ **ارسال بر اساس الگو (BaseServiceNumber)**: ارسال فوق‌سریع کدهای OTP و پیامک‌های اطلاع‌رسانی حتی به خطوطی که دریافت پیامک تبلیغاتی را مسدود کرده‌اند (بلک‌لیست).
 - 🏷️ **پشتیبانی از نام مستعار الگوها (Aliasing)**: امکان استفاده از کلماتی مثل `'otp'` به جای به‌خاطرسپردن کدهای عددی قالب‌ها.
 - 📋 **استعلام لایو شماره‌های فعال پنل**: خواندن مستقیم خطوط کاربر از سرور فراپیامک جهت نمایش در کنترل‌روم یا Dropdown تنظیمات پنل ادمین.
+- 💾 **پشتیبانی دوحالته از دیتابیس و .env**: امکان تغییر نام‌کاربری و رمز توسط مدیر سایت در پنل مدیریت با کش خودکار.
 - 🔔 **کانال رسمی نوتیفیکیشن لاراول (`FarapayamakChannel`)**: ارسال پیامک بدون نیاز به کدنویسی اضافه و تنها با متد `via()` لاراول.
 - 🛠️ **۵ دستور اختصاصی Artisan**: استعلام شارژ، مشاهده خطوط، تست پترن و ارسال مستقیم از طریق ترمینال لینوکس/ویندوز.
 - 🎙️ **ارسال صوتی (Voice)**: تماس صوتی خودکار و قرائت متن در صورت نیاز.
@@ -65,6 +71,7 @@
 
 ---
 
+<a id="requirements"></a>
 ## 📋 پیش‌نیازها
 
 - PHP >= 8.1
@@ -73,6 +80,7 @@
 
 ---
 
+<a id="installation"></a>
 ## 📥 نصب و راه‌اندازی
 
 نصب پکیج از طریق کامپوزر:
@@ -93,6 +101,7 @@ php artisan vendor:publish --tag=farapayamak-config
 
 ---
 
+<a id="configuration"></a>
 ## ⚙️ تنظیمات (.env)
 
 اطلاعات احراز هویت دریافتی از پنل فراپیامک را در فایل `.env` وارد نمایید:
@@ -124,6 +133,7 @@ FARAPAYAMAK_PATTERN_TRACKING=12347
 
 ---
 
+<a id="hybrid-database"></a>
 ## 💾 معماری دوحالته (Hybrid): خواندن و ذخیره در دیتابیس
 
 اگر مایل نیستید تنظیمات را دستی در `.env` بنویسید و می‌خواهید مدیر سایت بتواند از داخل پنل ادمین (مثلاً فرم تنظیمات سایت یا Filament) نام‌کاربری، رمز و الگوها را تغییر دهد، این پکیج به صورت پیش‌فرض از معماری **دوحالته هوشمند (Hybrid)** پشتیبانی می‌کند:
@@ -197,6 +207,7 @@ Farapayamak::setCredentials('custom_user', 'custom_pass', from: '5000999')
 
 ---
 
+<a id="usage"></a>
 ## 🚀 آموزش جامع استفاده
 
 ابتدا کلاس Facade را فراخوانی کنید:
@@ -207,12 +218,13 @@ use Farapayamak\Laravel\Facades\Farapayamak;
 
 ---
 
+<a id="pattern-sending"></a>
 ### ۱. ارسال بر اساس الگو/پترن خدماتی (عبور از بلک‌لیست)
 
 این متد برای کدهای احراز هویت (OTP)، فاکتور، وضعیت سفارش و خوش‌آمدگویی استفاده می‌شود و **به تمام شماره‌ها حتی خطوطی که تبلیغات را بسته‌اند در کسری از ثانیه تحویل داده می‌شود**:
 
 ```php
-// روش اول: با استفاده از نام مستعار تعریف شده در config/farapayamak.php
+// روش اول: با استفاده از نام مستعار تعریف شده در تنظیمات
 Farapayamak::pattern('otp', '09121234567', ['54821']);
 
 // ارسال با چند متغیر:
@@ -227,6 +239,7 @@ Farapayamak::pattern(12345, '09121234567', ['54821']);
 
 ---
 
+<a id="user-numbers"></a>
 ### ۲. دریافت شماره‌های کاربر برای فرم‌ها و Select-Box
 
 برای اینکه در پنل ادمین (مثلاً Filament یا فرم تنظیمات) لیست شماره خطوط فعال شما به کاربر نمایش داده شود تا خط فرستنده را انتخاب کند:
@@ -255,9 +268,10 @@ public function settings()
 
 ---
 
+<a id="service-patterns"></a>
 ### ۳. دریافت لیست الگوهای خدماتی
 
-برای مشاهده لیست الگوهایی که در فایل کانفیگ برای پروژه تنظیم کرده‌اید:
+برای مشاهده لیست الگوهایی که برای پروژه تنظیم کرده‌اید (از دیتابیس یا فایل کانفیگ):
 
 ```php
 $patterns = Farapayamak::getPatterns();
@@ -265,6 +279,7 @@ $patterns = Farapayamak::getPatterns();
 
 ---
 
+<a id="simple-sms"></a>
 ### ۴. ارسال پیامک متنی ساده، فلش و گروهی
 
 ```php
@@ -283,6 +298,7 @@ Farapayamak::send('09121234567', 'کد امنیتی فوری: 7721', isFlash: tr
 
 ---
 
+<a id="multiple-sms"></a>
 ### ۵. ارسال متناظر و نظیر به نظیر
 
 ارسال متن‌های متفاوت به شماره‌های متفاوت در یک ریکوئست:
@@ -302,6 +318,7 @@ Farapayamak::sendMultiple(
 
 ---
 
+<a id="credit-check"></a>
 ### ۶. استعلام مانده اعتبار عددی و ریالی
 
 ```php
@@ -314,6 +331,7 @@ $creditRials = Farapayamak::getCreditRial();
 
 ---
 
+<a id="voice-sms"></a>
 ### ۷. ارسال پیامک صوتی (Text-to-Speech)
 
 اگر مخاطب شماره ثابت باشد یا قصد داشته باشید متن به گفتار تبدیل شده و برای او خوانده شود:
@@ -324,6 +342,7 @@ Farapayamak::voice('09121234567', 'کد فعال‌سازی شما پنج، شش
 
 ---
 
+<a id="schedule-sms"></a>
 ### ۸. زمان‌بندی پیامک
 
 ارسال پیامک در تاریخ و ساعت مشخص در آینده:
@@ -334,6 +353,7 @@ Farapayamak::schedule('09121234567', 'یادآوری جلسه فردا', '2026-1
 
 ---
 
+<a id="delivery-reports"></a>
 ### ۹. استعلام وضعیت تحویل (Delivery)
 
 ```php
@@ -346,6 +366,7 @@ $deliveries = Farapayamak::getDeliveries([$recId1, $recId2]);
 
 ---
 
+<a id="laravel-notifications"></a>
 ## 🔔 یکپارچگی با نوتیفیکیشن‌های لاراول (Laravel Notification)
 
 به سادگی از طریق کلاس‌های استاندارد `Notification` لاراول پیامک بفرستید:
@@ -394,6 +415,7 @@ $user->notify(new VerifyMobileNotification('94821'));
 
 ---
 
+<a id="testing-fake"></a>
 ## 🧪 سیستم شبیه‌ساز تست (Fake / Mocking)
 
 هنگام نوشتن تست‌های خودکار با **PHPUnit** یا **Pest**، برای جلوگیری از ارسال پیامک واقعی و مصرف شارژ:
@@ -423,6 +445,7 @@ public function test_user_receives_otp_on_registration()
 
 ---
 
+<a id="artisan-commands"></a>
 ## 💻 دستورات خط فرمان ترمینال (Artisan Commands)
 
 | دستور Artisan | توضیحات کاربردی |
@@ -435,6 +458,7 @@ public function test_user_receives_otp_on_registration()
 
 ---
 
+<a id="laravel-events"></a>
 ## 📡 رویدادهای لاراول (Laravel Events)
 
 پکیج به طور خودکار در مراحل مختلف ایونت‌های لاراول را پرتاب می‌کند تا بتوانید گزارش‌ها را در دیتابیس لاگ کنید:
@@ -446,6 +470,7 @@ public function test_user_receives_otp_on_registration()
 
 ---
 
+<a id="error-codes"></a>
 ## ⚠️ جدول کدهای خطای فراپیامک
 
 تمامی کدهای خطای وب‌سرویس فراپیامک به پیام‌های فارسی خوانا تبدیل شده و در صورت بروز خطا به شکل `FarapayamakException` برگردانده می‌شوند:
@@ -463,12 +488,14 @@ public function test_user_receives_otp_on_registration()
 
 ---
 
+<a id="english-summary"></a>
 ## 🌐 English Summary
 
-A comprehensive, enterprise-ready SMS integration package for **Laravel** using **Farapayamak SMS Gateway**. Features full support for **REST API**, **SOAP Web Services**, **Shared Base Service Patterns (bypassing telecommunication blacklists)**, **Laravel Notification Channels**, **Testing Fake (Mocking)**, and **Artisan Console Commands**.
+A comprehensive, enterprise-ready SMS integration package for **Laravel** using **Farapayamak SMS Gateway**. Features full support for **REST API**, **SOAP Web Services**, **Shared Base Service Patterns (bypassing telecommunication blacklists)**, **Database & Hybrid configuration support**, **Laravel Notification Channels**, **Testing Fake (Mocking)**, and **Artisan Console Commands**.
 
 ---
 
+<a id="license"></a>
 ## 📜 لایسنس
 
 این نرم‌افزار تحت لایسنس [MIT](LICENSE) منتشر شده است.
