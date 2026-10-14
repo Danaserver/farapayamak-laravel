@@ -1,5 +1,5 @@
 {
-    "name": "farapayamak/laravel-farapayamak",
+    "name": "danaserver/farapayamak-laravel",
     "description": "Comprehensive, modern and enterprise-grade Farapayamak SMS Package for Laravel with REST, SOAP, Pattern/BaseService, Notification Channel, and Testing Fake support.",
     "keywords": [
         "laravel",
@@ -12,7 +12,7 @@
         "soap",
         "rest"
     ],
-    "homepage": "https://github.com/farapayamak/laravel-farapayamak",
+    "homepage": "https://github.com/Danaserver/farapayamak-laravel",
     "license": "MIT",
     "authors": [
         {

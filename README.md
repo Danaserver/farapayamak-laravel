@@ -4,13 +4,13 @@
 
 **کامل‌ترین، مدرن‌ترین و پیشرفته‌ترین کتابخانه ارتباط با وب‌سرویس‌های فراپیامک در اکوسیستم لاراول**
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/farapayamak/laravel-farapayamak.svg?style=for-the-badge&logo=packagist)](https://packagist.org/packages/farapayamak/laravel-farapayamak)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/danaserver/farapayamak-laravel.svg?style=for-the-badge&logo=packagist)](https://packagist.org/packages/danaserver/farapayamak-laravel)
 [![Software License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.1-777BB4.svg?style=for-the-badge&logo=php)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/Laravel-9.x%20|%2010.x%20|%2011.x%20|%2012.x-FF2D20.svg?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![Tests Passing](https://img.shields.io/badge/tests-passing-brightgreen.svg?style=for-the-badge&logo=githubactions)](tests)
 
-[English Documentation](#-english-summary) • [گزارش باگ / پیشنهاد](https://github.com/farapayamak/laravel-farapayamak/issues) • [مستندات فراپیامک](https://docs.farapayamak.ir)
+[English Documentation](#-english-summary) • [گزارش باگ / پیشنهاد](https://github.com/Danaserver/farapayamak-laravel/issues) • [مستندات فراپیامک](https://docs.farapayamak.ir)
 
 </div>
 
@@ -77,7 +77,7 @@
 نصب پکیج از طریق کامپوزر:
 
 ```bash
-composer require farapayamak/laravel-farapayamak
+composer require danaserver/farapayamak-laravel
 ```
 
 سرویس پرووایدر و فکاد پکیج به صورت خودکار توسط **Package Auto-Discovery** لاراول شناسایی می‌شوند.
