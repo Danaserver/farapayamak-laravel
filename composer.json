@@ -1,0 +1,56 @@
+{
+    "name": "farapayamak/laravel-farapayamak",
+    "description": "Comprehensive, modern and enterprise-grade Farapayamak SMS Package for Laravel with REST, SOAP, Pattern/BaseService, Notification Channel, and Testing Fake support.",
+    "keywords": [
+        "laravel",
+        "farapayamak",
+        "sms",
+        "iran",
+        "notification",
+        "base-service-number",
+        "otp",
+        "soap",
+        "rest"
+    ],
+    "homepage": "https://github.com/farapayamak/laravel-farapayamak",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Farapayamak Contributors",
+            "email": "info@farapayamak.ir"
+        }
+    ],
+    "require": {
+        "php": "^8.1|^8.2|^8.3|^8.4",
+        "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+        "illuminate/notifications": "^9.0|^10.0|^11.0|^12.0",
+        "illuminate/console": "^9.0|^10.0|^11.0|^12.0",
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^9.5|^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Farapayamak\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Farapayamak\\Laravel\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Farapayamak\\Laravel\\FarapayamakServiceProvider"
+            ],
+            "aliases": {
+                "Farapayamak": "Farapayamak\\Laravel\\Facades\\Farapayamak"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
