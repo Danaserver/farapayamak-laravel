@@ -37,11 +37,18 @@ class FarapayamakServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Publishing configuration
+        // Load database migrations
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+        // Publishing configuration & migrations
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/farapayamak.php' => config_path('farapayamak.php'),
             ], 'farapayamak-config');
+
+            $this->publishes([
+                __DIR__ . '/../database/migrations' => database_path('migrations'),
+            ], 'farapayamak-migrations');
 
             // Register Artisan commands
             $this->commands([

@@ -22,6 +22,7 @@
 - [پیش‌نیازها](#-پیشنیازها)
 - [نصب و راه‌اندازی](#-نصب-و-راهاندازی)
 - [تنظیمات (.env)](#️-تنظیمات-env)
+- [معماری دوحالته (Hybrid): خواندن و ذخیره در دیتابیس](#-معماری-دوحالته-hybrid-خواندن-و-ذخیره-در-دیتابیس)
 - [آموزش جامع استفاده](#-آموزش-جامع-استفاده)
   - [۱. ارسال بر اساس الگو/پترن خدماتی (عبور از بلک‌لیست)](#۱-ارسال-بر-اساس-الگوپترن-خدماتی-عبور-از-بلکلیست)
   - [۲. دریافت شماره‌های کاربر برای فرم‌ها و Select-Box](#۲-دریافت-شمارههای-کاربر-برای-فرمها-و-select-box)
@@ -119,6 +120,79 @@ FARAPAYAMAK_FAILOVER=true
 FARAPAYAMAK_PATTERN_OTP=12345
 FARAPAYAMAK_PATTERN_WELCOME=12346
 FARAPAYAMAK_PATTERN_TRACKING=12347
+```
+
+---
+
+## 💾 معماری دوحالته (Hybrid): خواندن و ذخیره در دیتابیس
+
+اگر مایل نیستید تنظیمات را دستی در `.env` بنویسید و می‌خواهید مدیر سایت بتواند از داخل پنل ادمین (مثلاً فرم تنظیمات سایت یا Filament) نام‌کاربری، رمز و الگوها را تغییر دهد، این پکیج به صورت پیش‌فرض از معماری **دوحالته هوشمند (Hybrid)** پشتیبانی می‌کند:
+
+> **اولویت لود**: ابتدا دیتابیس (با کش خودکار جهت حفظ سرعت و عدم تحمیل کوئری اضافه) ⬅️ اگر در دیتابیس نبود، خودکار از `.env` می‌خواند!
+
+### حالت الف: استفاده از جدول پیش‌فرض پکیج
+
+۱. اجرای مایگریشن جدول تنظیمات:
+```bash
+php artisan migrate
+```
+*(یک جدول به نام `farapayamak_settings` ایجاد می‌شود).*
+
+۲. ذخیره یا ویرایش آسان تنظیمات از داخل کنترلر ادمین سایت:
+```php
+use Farapayamak\Laravel\Facades\Farapayamak;
+
+public function updateSmsSettings(Request $request)
+{
+    Farapayamak::saveSettings([
+        'username' => $request->username,
+        'password' => $request->password,
+        'from'     => $request->from_number,
+        'driver'   => 'rest',
+        'patterns' => [
+            'otp'     => ['id' => 12345, 'title' => 'کد تایید ورود', 'vars' => ['code']],
+            'welcome' => ['id' => 12346, 'title' => 'خوش‌آمدگویی', 'vars' => ['name']],
+        ],
+    ]);
+
+    return back()->with('success', 'تنظیمات پیامک با موفقیت ذخیره شد.');
+}
+```
+
+۳. پاک‌سازی کش تنظیمات (در صورت ویرایش دستی دیتابیس):
+```php
+Farapayamak::clearSettingsCache();
+```
+
+---
+
+### حالت ب: اتصال به جدول تنظیمات اختصاصی پروژه شما
+
+اگر در پروژه‌تان از قبل یک سیستم تنظیمات (مثل جدول `settings` یا پکیج‌های تنظیمات لاراول) دارید، نیازی به جدول جدید نیست! کافیست در `AppServiceProvider` متد زیر را صدا بزنید:
+
+```php
+use Farapayamak\Laravel\Facades\Farapayamak;
+
+public function boot()
+{
+    Farapayamak::resolveConfigUsing(function () {
+        return [
+            'username' => setting('farapayamak_username'),
+            'password' => setting('farapayamak_password'),
+            'from'     => setting('farapayamak_from'),
+            'patterns' => setting('farapayamak_patterns', []),
+        ];
+    });
+}
+```
+
+---
+
+### حالت ج: تغییر مشخصات در زمان اجرا (Runtime)
+
+```php
+Farapayamak::setCredentials('custom_user', 'custom_pass', from: '5000999')
+    ->send('09121234567', 'پیامک با اکانت دلخواه');
 ```
 
 ---

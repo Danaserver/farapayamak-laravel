@@ -14,6 +14,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Database & Hybrid Configuration
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, credentials and patterns are primarily read from your database
+    | (farapayamak_settings table or your custom resolver).
+    | If no database record is found, it automatically falls back to .env values.
+    |
+    */
+    'database' => [
+        'enabled'   => env('FARAPAYAMAK_USE_DATABASE', true),
+        'table'     => env('FARAPAYAMAK_SETTINGS_TABLE', 'farapayamak_settings'),
+        'cache_ttl' => env('FARAPAYAMAK_CACHE_TTL', 86400), // 24 hours in seconds
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Sandbox Mode (Testing without real SMS cost)
     |--------------------------------------------------------------------------
     |

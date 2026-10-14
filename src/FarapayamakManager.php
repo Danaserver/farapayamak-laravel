@@ -11,8 +11,11 @@ use Farapayamak\Laravel\Events\FarapayamakSending;
 use Farapayamak\Laravel\Events\FarapayamakSent;
 use Farapayamak\Laravel\Exceptions\FarapayamakException;
 use Farapayamak\Laravel\Testing\FarapayamakFake;
+use Farapayamak\Laravel\Models\FarapayamakSetting;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Throwable;
 
 class FarapayamakManager
@@ -28,13 +31,129 @@ class FarapayamakManager
     protected array $config;
 
     /**
+     * Custom dynamic config resolver callback.
+     *
+     * @var callable|null
+     */
+    protected static $configResolver = null;
+
+    /**
      * Fake instance if testing fake is active.
      */
     protected ?FarapayamakFake $fakeInstance = null;
 
-    public function __construct(protected Application $app)
+    public function __construct(protected mixed $app)
     {
         $this->config = $app['config']['farapayamak'] ?? [];
+    }
+
+    /**
+     * Register a custom dynamic config resolver callback.
+     * Farapayamak::resolveConfigUsing(fn() => [...])
+     */
+    public static function resolveConfigUsing(?callable $resolver): void
+    {
+        static::$configResolver = $resolver;
+    }
+
+    /**
+     * Get the effective configuration by merging database, custom resolver, and .env fallbacks.
+     */
+    public function getEffectiveConfig(): array
+    {
+        $config = $this->config;
+
+        // 1. Check custom user callback resolver first
+        if (is_callable(static::$configResolver)) {
+            $custom = call_user_func(static::$configResolver);
+            if (is_array($custom)) {
+                return $this->mergeResolvedConfig($config, $custom);
+            }
+        }
+
+        // 2. Check Database if enabled
+        if (!empty($config['database']['enabled'])) {
+            try {
+                $tableName = $config['database']['table'] ?? 'farapayamak_settings';
+                if (Schema::hasTable($tableName)) {
+                    $setting = FarapayamakSetting::current();
+                    if ($setting) {
+                        $dbConfig = array_filter([
+                            'username' => $setting->username,
+                            'password' => $setting->password,
+                            'from'     => $setting->from,
+                            'default'  => $setting->driver,
+                            'sandbox'  => $setting->sandbox,
+                            'patterns' => !empty($setting->patterns) ? $setting->patterns : null,
+                        ], fn($val) => !is_null($val) && $val !== '');
+
+                        return $this->mergeResolvedConfig($config, $dbConfig);
+                    }
+                }
+            } catch (Throwable) {
+                // If database connection fails during early bootstrap, gracefully fall back to .env
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * Helper to merge resolved config with base config.
+     */
+    protected function mergeResolvedConfig(array $base, array $override): array
+    {
+        if (isset($override['patterns']) && is_array($override['patterns'])) {
+            $override['patterns'] = array_merge($base['patterns'] ?? [], $override['patterns']);
+        }
+
+        return array_merge($base, $override);
+    }
+
+    /**
+     * Save settings directly to the database.
+     */
+    public function saveSettings(array $data): ?FarapayamakSetting
+    {
+        $setting = FarapayamakSetting::setSettings($data);
+        $this->clearDrivers();
+        return $setting;
+    }
+
+    /**
+     * Clear settings cache and cached drivers.
+     */
+    public function clearSettingsCache(): void
+    {
+        Cache::forget(FarapayamakSetting::CACHE_KEY);
+        $this->clearDrivers();
+    }
+
+    /**
+     * Set temporary credentials during runtime.
+     */
+    public function setCredentials(string $username, string $password, ?string $from = null, array $patterns = []): self
+    {
+        $this->config['username'] = $username;
+        $this->config['password'] = $password;
+        if ($from) {
+            $this->config['from'] = $from;
+        }
+        if (!empty($patterns)) {
+            $this->config['patterns'] = array_merge($this->config['patterns'] ?? [], $patterns);
+        }
+
+        $this->clearDrivers();
+
+        return $this;
+    }
+
+    /**
+     * Clear cached driver instances.
+     */
+    public function clearDrivers(): void
+    {
+        $this->drivers = [];
     }
 
     /**
@@ -46,28 +165,32 @@ class FarapayamakManager
             return $this->fakeInstance;
         }
 
-        $name = $name ?: ($this->config['default'] ?? 'rest');
+        $effectiveConfig = $this->getEffectiveConfig();
 
-        if ($this->config['sandbox'] ?? false) {
+        $name = $name ?: ($effectiveConfig['default'] ?? 'rest');
+
+        if ($effectiveConfig['sandbox'] ?? false) {
             $name = 'log';
         }
 
         if (!isset($this->drivers[$name])) {
-            $this->drivers[$name] = $this->createDriver($name);
+            $this->drivers[$name] = $this->createDriver($name, $effectiveConfig);
         }
 
         return $this->drivers[$name];
     }
 
     /**
-     * Create driver instance.
+     * Create driver instance with effective configuration.
      */
-    protected function createDriver(string $name): DriverInterface
+    protected function createDriver(string $name, ?array $config = null): DriverInterface
     {
+        $cfg = $config ?: $this->getEffectiveConfig();
+
         return match ($name) {
-            'rest' => new RestDriver($this->config),
-            'soap' => new SoapDriver($this->config),
-            'log'  => new LogDriver($this->config),
+            'rest' => new RestDriver($cfg),
+            'soap' => new SoapDriver($cfg),
+            'log'  => new LogDriver($cfg),
             default => throw new FarapayamakException("درایور پیامک نامعتبر: {$name}"),
         };
     }
@@ -208,7 +331,7 @@ class FarapayamakManager
      */
     public function getPatterns(): array
     {
-        return $this->config['patterns'] ?? [];
+        return $this->getEffectiveConfig()['patterns'] ?? [];
     }
 
     /**
